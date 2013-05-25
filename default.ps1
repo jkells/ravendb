@@ -511,6 +511,11 @@ task CreateNugetPackages -depends Compile {
 	Copy-Item $base_dir\NuGet\RavenTests $nuget_dir\RavenDB.Tests.Helpers\content\RavenTests -Recurse
 	
 	$nugetVersion = "$version.$env:buildlabel"
+	
+	if ($env:NUGET_BUILD_VERSION -ne $null) {
+		$nugetVersion += ".$env:NUGET_BUILD_VERSION"
+	}
+	
 	if ($global:uploadCategory -and $global:uploadCategory.EndsWith("-Unstable")){
 		$nugetVersion += "-Unstable"
 	}
