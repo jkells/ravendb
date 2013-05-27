@@ -143,21 +143,17 @@ namespace Raven.Imports.Newtonsoft.Json
       }
     }
 
-    internal string ContainerPath
-    {
-      get
-      {
-        if (_currentPosition.Type == JsonContainerType.None)
-          return string.Empty;
+	internal string ContainerPath
+	{
+		get
+		{
+			if (_currentPosition.Type == JsonContainerType.None)
+				return string.Empty;
 
-        IEnumerable<JsonPosition> positions = (_currentPosition.InsideContainer())
-          ? _stack
-          : _stack.Concat(new[] { _currentPosition });
-
-        return JsonPosition.BuildPath(positions);
-      }
-    }
-    
+			return JsonPosition.BuildPath(_stack);
+		}
+	}
+	
     /// <summary>
     /// Gets the state of the writer.
     /// </summary>

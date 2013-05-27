@@ -666,5 +666,34 @@ namespace Raven.Json.Linq
 		{
 			get { return new RavenJValue(null, JTokenType.Null); }
 		}
-	}
+
+#if !SILVERLIGHT
+		public static RavenJToken Load(JsonTextReaderAsync reader)
+		{
+			RavenJValue v;
+			switch (reader.TokenType)
+			{
+				case JsonToken.String:
+				case JsonToken.Integer:
+				case JsonToken.Float:
+				case JsonToken.Date:
+				case JsonToken.Boolean:
+				case JsonToken.Bytes:
+					v = new RavenJValue(reader.Value);
+					break;
+				case JsonToken.Null:
+					v = new RavenJValue(null, JTokenType.Null);
+					break;
+				case JsonToken.Undefined:
+					v = new RavenJValue(null, JTokenType.Undefined);
+					break;
+				default:
+					throw new InvalidOperationException("The JsonReader should not be on a token of type {0}."
+															.FormatWith(CultureInfo.InvariantCulture,
+																		reader.TokenType));
+			}
+			return v;
+		}
+#endif
+    }
 }
