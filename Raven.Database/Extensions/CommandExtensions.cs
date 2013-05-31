@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 using Raven.Abstractions.Commands;
-using Raven.Database.Data;
+using Raven.Json.Linq;
 
 namespace Raven.Database.Extensions
 {
@@ -32,7 +32,9 @@ namespace Raven.Database.Extensions
 			var patchCommandData = self as PatchCommandData;
 			if (patchCommandData != null)
 			{
-				database.ApplyPatch(patchCommandData.Key, patchCommandData.Etag, patchCommandData.Patches, patchCommandData.TransactionInformation);
+				database.ApplyPatch(patchCommandData.Key, patchCommandData.Etag,
+									patchCommandData.Patches, patchCommandData.PatchesIfMissing, patchCommandData.Metadata,
+									patchCommandData.TransactionInformation);
 
 				var doc = database.Get(patchCommandData.Key, patchCommandData.TransactionInformation);
 				if (doc != null)
@@ -47,11 +49,13 @@ namespace Raven.Database.Extensions
 			if (advPatchCommandData != null)
 			{
 				var result = database.ApplyPatch(advPatchCommandData.Key, advPatchCommandData.Etag,
-									advPatchCommandData.Patch, advPatchCommandData.TransactionInformation, advPatchCommandData.DebugMode);
+												 advPatchCommandData.Patch, advPatchCommandData.PatchIfMissing, advPatchCommandData.Metadata,
+												 advPatchCommandData.TransactionInformation, advPatchCommandData.DebugMode);
 
+				advPatchCommandData.AdditionalData = new RavenJObject { { "Debug", new RavenJArray(result.Item2) } };
 				if(advPatchCommandData.DebugMode)
 				{
-					advPatchCommandData.AdditionalData = result.Item1.Document;
+					advPatchCommandData.AdditionalData["Document"] = result.Item1.Document;
 					return;
 				}
 

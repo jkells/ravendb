@@ -136,6 +136,40 @@ namespace Raven.Client.Connection.Async
 		/// <param name="metadata">The metadata.</param>
 		Task<PutResult> PutAsync(string key, Guid? etag, RavenJObject document, RavenJObject metadata);
 
+		/// <summary>
+		/// Sends a patch request for a specific document
+		/// </summary>
+		/// <param name="key">Id of the document to patch</param>
+		/// <param name="patches">Array of patch requests</param>
+		/// <param name="etag">Require specific Etag [null to ignore]</param>
+		Task PatchAsync(string key, PatchRequest[] patches, Guid? etag);
+
+		/// <summary>
+		/// Sends a patch request for a specific document which may or may not currently exist
+		/// </summary>
+		/// <param name="key">Id of the document to patch</param>
+		/// <param name="patchesToExisting">Array of patch requests to apply to an existing document</param>
+		/// <param name="patchesToDefault">Array of patch requests to apply to a default document when the document is missing</param>
+		/// <param name="defaultMetadata">The metadata for the default document when the document is missing</param>
+		Task PatchAsync(string key, PatchRequest[] patchesToExisting, PatchRequest[] patchesToDefault, RavenJObject defaultMetadata);
+
+		/// <summary>
+		/// Sends a patch request for a specific document
+		/// </summary>
+		/// <param name="key">Id of the document to patch</param>
+		/// <param name="patch">The patch request to use (using JavaScript)</param>
+		/// <param name="etag">Require specific Etag [null to ignore]</param>
+        Task PatchAsync(string key, ScriptedPatchRequest patch, Guid? etag);
+
+		/// <summary>
+		/// Sends a patch request for a specific document which may or may not currently exist
+		/// </summary>
+		/// <param name="key">Id of the document to patch</param>
+		/// <param name="patchExisting">The patch request to use (using JavaScript) to an existing document</param>
+		/// <param name="patchDefault">The patch request to use (using JavaScript)  to a default document when the document is missing</param>
+		/// <param name="defaultMetadata">The metadata for the default document when the document is missing</param>
+		Task PatchAsync(string key, ScriptedPatchRequest patchExisting, ScriptedPatchRequest patchDefault, RavenJObject defaultMetadata);
+
 #if SILVERLIGHT
 		/// <summary>
 		/// Create a http request to the specified relative url on the current database
@@ -298,3 +332,4 @@ namespace Raven.Client.Connection.Async
 		Task<JsonDocumentMetadata> HeadAsync(string key);
 	}
 }
+
