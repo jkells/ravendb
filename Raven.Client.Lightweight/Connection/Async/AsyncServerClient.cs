@@ -305,12 +305,37 @@ namespace Raven.Client.Connection.Async
 		}
 
 		/// <summary>
+		/// Sends a patch request for a specific document, ignoring the document's Etag
+		/// </summary>
+		/// <param name="key">Id of the document to patch</param>
+		/// <param name="patches">Array of patch requests</param>
+		/// <param name="ignoreMissing">true if the patch request should ignore a missing document, false to throw DocumentDoesNotExistException</param>
+		public Task PatchAsync(string key, PatchRequest[] patches, bool ignoreMissing)
+		{
+			return BatchAsync(new ICommandData[]
+							  {
+								  new PatchCommandData
+								  {
+									  Key = key,
+									  Patches = patches,
+								  }
+							  }).ContinueWith(task =>
+							  {
+								  if (task.IsFaulted)
+									  throw task.Exception;
+
+								  if (!ignoreMissing && task.Result[0].PatchResult != null && task.Result[0].PatchResult == PatchResult.DocumentDoesNotExists)
+									  throw new DocumentDoesNotExistsException("Document with key " + key + " does not exist.");
+							  });
+		}
+
+		/// <summary>
 		/// Sends a patch request for a specific document
 		/// </summary>
 		/// <param name="key">Id of the document to patch</param>
 		/// <param name="patches">Array of patch requests</param>
 		/// <param name="etag">Require specific Etag [null to ignore]</param>
-        public Task PatchAsync(string key, PatchRequest[] patches, Guid? etag)
+		public Task PatchAsync(string key, PatchRequest[] patches, Guid? etag)
 		{
 			return BatchAsync(new ICommandData[]
 					{
@@ -333,7 +358,7 @@ namespace Raven.Client.Connection.Async
 		/// <param name="defaultMetadata">The metadata for the default document when the document is missing</param>
 		public Task PatchAsync(string key, PatchRequest[] patchesToExisting, PatchRequest[] patchesToDefault, RavenJObject defaultMetadata)
 		{
-            return BatchAsync(new ICommandData[]
+			return BatchAsync(new ICommandData[]
 					{
 						new PatchCommandData
 							{
@@ -343,6 +368,27 @@ namespace Raven.Client.Connection.Async
 								Metadata = defaultMetadata
 							}
 					});
+		}
+		/// <summary>
+		/// Sends a patch request for a specific document, ignoring the document's Etag
+		/// </summary>
+		/// <param name="key">Id of the document to patch</param>
+		/// <param name="patch">The patch request to use (using JavaScript)</param>
+		/// <param name="ignoreMissing">true if the patch request should ignore a missing document, false to throw DocumentDoesNotExistException</param>
+		public Task PatchAsync(string key, ScriptedPatchRequest patch, bool ignoreMissing)
+		{
+			return BatchAsync(new ICommandData[]
+							  {
+								  new ScriptedPatchCommandData
+								  {
+									  Key = key,
+									  Patch = patch,
+								  }
+							  }).ContinueWith(task =>
+							  {
+								  if (!ignoreMissing && task.Result[0].PatchResult != null && task.Result[0].PatchResult == PatchResult.DocumentDoesNotExists)
+									  throw new DocumentDoesNotExistsException("Document with key " + key + " does not exist.");
+							  });
 		}
 
 		/// <summary>

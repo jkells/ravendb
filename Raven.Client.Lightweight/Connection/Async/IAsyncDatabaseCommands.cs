@@ -145,6 +145,14 @@ namespace Raven.Client.Connection.Async
 		Task PatchAsync(string key, PatchRequest[] patches, Guid? etag);
 
 		/// <summary>
+		/// Sends a patch request for a specific document, ignoring the document's Etag
+		/// </summary>
+		/// <param name="key">Id of the document to patch</param>
+		/// <param name="patches">Array of patch requests</param>
+		/// <param name="ignoreMissing">true if the patch request should ignore a missing document, false to throw DocumentDoesNotExistException</param>
+		Task PatchAsync(string key, PatchRequest[] patches, bool ignoreMissing);
+
+		/// <summary>
 		/// Sends a patch request for a specific document which may or may not currently exist
 		/// </summary>
 		/// <param name="key">Id of the document to patch</param>
@@ -152,6 +160,14 @@ namespace Raven.Client.Connection.Async
 		/// <param name="patchesToDefault">Array of patch requests to apply to a default document when the document is missing</param>
 		/// <param name="defaultMetadata">The metadata for the default document when the document is missing</param>
 		Task PatchAsync(string key, PatchRequest[] patchesToExisting, PatchRequest[] patchesToDefault, RavenJObject defaultMetadata);
+
+		/// <summary>
+		/// Sends a patch request for a specific document, ignoring the document's Etag
+		/// </summary>
+		/// <param name="key">Id of the document to patch</param>
+		/// <param name="patch">The patch request to use (using JavaScript)</param>
+		/// <param name="ignoreMissing">true if the patch request should ignore a missing document, false to throw DocumentDoesNotExistException</param>
+		Task PatchAsync(string key, ScriptedPatchRequest patch, bool ignoreMissing);
 
 		/// <summary>
 		/// Sends a patch request for a specific document

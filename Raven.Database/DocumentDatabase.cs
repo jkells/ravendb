@@ -1776,21 +1776,7 @@ namespace Raven.Database
 				{
 					try
 					{
-						TransactionalStorage.Batch(actions =>
-						{
-							foreach (var command in commandDatas)
-							{
-								command.Execute(this);
-								results.Add(new BatchResult
-								{
-									Method = command.Method,
-									Key = command.Key,
-									Etag = command.Etag,
-									Metadata = command.Metadata,
-									AdditionalData = command.AdditionalData
-								});
-							}
-						});
+						TransactionalStorage.Batch(actions => results.AddRange(commandDatas.Select(command => command.ExecuteBatch(this))));
 					}
 					catch (ConcurrencyException)
 					{

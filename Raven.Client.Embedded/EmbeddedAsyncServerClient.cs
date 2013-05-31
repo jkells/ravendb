@@ -210,21 +210,33 @@ namespace Raven.Client.Embedded
 			return new CompletedTask<PutResult>(databaseCommands.Put(key, etag, document, metadata));
 		}
 
+		public Task PatchAsync(string key, PatchRequest[] patches, bool ignoreMissing)
+		{
+			databaseCommands.Patch(key, patches, ignoreMissing);
+			return new CompletedTask<RavenJObject>();
+		}
+
 		public Task PatchAsync(string key, PatchRequest[] patches, Guid? etag)
 		{
-		    databaseCommands.Patch(key, patches, etag);
+			databaseCommands.Patch(key, patches, etag);
 			return new CompletedTask<RavenJObject>();
 		}
 
 		public Task PatchAsync(string key, PatchRequest[] patchesToExisting, PatchRequest[] patchesToDefault, RavenJObject defaultMetadata)
 		{
-		    databaseCommands.Patch(key, patchesToExisting, patchesToDefault, defaultMetadata);
+			databaseCommands.Patch(key, patchesToExisting, patchesToDefault, defaultMetadata);
 			return new CompletedTask<RavenJObject>();
 		}
 
-        public Task PatchAsync(string key, ScriptedPatchRequest patch, Guid? etag)
+		public Task PatchAsync(string key, ScriptedPatchRequest patch, bool ignoreMissing)
 		{
-		    databaseCommands.Patch(key, patch, etag);
+			databaseCommands.Patch(key, patch, ignoreMissing);
+			return new CompletedTask<RavenJObject>();
+		}
+
+		public Task PatchAsync(string key, ScriptedPatchRequest patch, Guid? etag)
+		{
+			databaseCommands.Patch(key, patch, etag);
 			return new CompletedTask<RavenJObject>();
 		}
 
