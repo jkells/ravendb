@@ -542,8 +542,8 @@ task CreateNugetPackages -depends Compile {
 	
 	$nugetVersion = "$version.$env:buildlabel"
 	
-	if ($env:NUGET_BUILD_VERSION -ne $null) {
-		$nugetVersion += ".$env:NUGET_BUILD_VERSION"
+	if ($env:NUGET_BUILD_NUMBER -ne $null) {
+		$nugetVersion += ".$env:NUGET_BUILD_NUMBER"
 	}
 	
 	if ($global:uploadCategory -and $global:uploadCategory.EndsWith("-Unstable")){

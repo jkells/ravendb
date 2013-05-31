@@ -807,6 +807,16 @@ namespace Raven.Json.Linq
 			throw new Exception("Error reading RavenJToken from JsonReader. Unexpected token: {0}".FormatWith(CultureInfo.InvariantCulture, reader.TokenType));
 
 		}
+
+		public static async Task<RavenJToken> TryLoadAsync(Stream stream)
+		{
+			var jsonTextReader = new JsonTextReaderAsync(new StreamReader(stream));
+			if (await jsonTextReader.ReadAsync() == false || jsonTextReader.TokenType == JsonToken.None)
+			{
+				return null;
+			}
+			return await ReadFromAsync(jsonTextReader);
+		}
 #endif
-    }
+	}
 }
