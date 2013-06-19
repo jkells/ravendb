@@ -1295,6 +1295,6 @@
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)$(TargetName).xap" "$(SolutionDir)\Raven.Database\Server\WebUI"</PostBuildEvent>
+    <PostBuildEvent>copy "$(SolutionDir)\Raven.Studio-2370.xap" "$(SolutionDir)\Raven.Database\Server\WebUI\Raven.Studio.xap"</PostBuildEvent>
   </PropertyGroup>
 </Project>
